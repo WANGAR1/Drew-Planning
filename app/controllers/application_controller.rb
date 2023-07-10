@@ -9,19 +9,18 @@ class ApplicationController < ActionController::API
     @current_user ||= User.find_by(id: session[:user_id])
   end
 
-  before_action :authenticate_user
-
   private
 
-  def authenticate_user(email, password)
-    user = User.find_by(email: email)
-  
-    if user && user.authenticate(password)
+  def authenticate_user
+    user = User.find_by(email: params[:email])
+
+    if user && user.authenticate(params[:password])
       store_session(user.id) # Store only the user ID in the session
       return true
     end
-  
-    false
-  end  
 
+    false
+  end
+
+  before_action :authenticate_user
 end
